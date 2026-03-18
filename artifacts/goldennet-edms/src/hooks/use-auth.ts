@@ -1,30 +1,61 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-
-// Simple mock auth store
-let isAuthenticated = false;
+import {
+  login as alfrescoLogin,
+  logout as alfrescoLogout,
+  isLoggedIn,
+  clearTicket,
+} from "@/services/alfrescoApi";
 
 export function useAuth() {
   const [, setLocation] = useLocation();
-  const [isLogged, setIsLogged] = useState(isAuthenticated);
+  const [isLogged, setIsLogged] = useState(isLoggedIn());
 
   useEffect(() => {
-    setIsLogged(isAuthenticated);
+    setIsLogged(isLoggedIn());
   }, []);
 
-  const login = async () => {
-    // Simulate network delay
-    await new Promise((r) => setTimeout(r, 800));
-    isAuthenticated = true;
-    setIsLogged(true);
-    setLocation("/dashboard");
+  const login = async (username: string, password: string) => {
+    try {
+      await alfrescoLogin(username, password);
+      setIsLogged(true);
+      setLocation("/dashboard");
+      return { success: true };
+    } catch (err: any) {
+      if (err.message === "ALFRESCO_UNREACHABLE") {
+        // Mock fallback: allow admin/admin when Alfresco is down
+        if (username === "admin" && password === "admin") {
+          localStorage.setItem("alf_ticket", "MOCK_TICKET");
+          setIsLogged(true);
+          setLocation("/dashboard");
+          return { success: true, mock: true };
+        }
+        return {
+          success: false,
+          error: "تعذر الاتصال بخادم Alfresco. تأكد من أن الخادم يعمل.",
+        };
+      }
+      return {
+        success: false,
+        error: "اسم المستخدم أو كلمة المرور غير صحيحة",
+      };
+    }
   };
 
-  const logout = () => {
-    isAuthenticated = false;
+  const logout = async () => {
+    try {
+      await alfrescoLogout();
+    } catch {
+      clearTicket();
+    }
     setIsLogged(false);
     setLocation("/login");
   };
 
-  return { isLogged, login, logout, user: isLogged ? { name: "أحمد محمد" } : null };
+  return {
+    isLogged,
+    login,
+    logout,
+    user: isLogged ? { name: "أحمد محمد" } : null,
+  };
 }

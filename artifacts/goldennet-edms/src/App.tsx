@@ -74,7 +74,7 @@ function Router() {
       <Route path="/activity-log"><ProtectedRoute component={ActivityLog} /></Route>
       <Route path="/settings"><ProtectedRoute component={Settings} /></Route>
       <Route path="/document/:id">
-        {(params) => <ProtectedRoute component={() => <DocumentDetail params={params} />} />}
+        <ProtectedRoute component={DocumentDetail} />
       </Route>
       
       <Route component={NotFound} />

@@ -21,9 +21,11 @@ export default function Upload() {
         setUploadProgress(p => p >= 90 ? p : p + 10);
       }, 200);
       return () => clearInterval(interval);
-    } else if (isSuccess) {
+    }
+    if (isSuccess) {
       setUploadProgress(100);
     }
+    return undefined;
   }, [isPending, isSuccess]);
 
   const handleDragOver = (e: React.DragEvent) => {

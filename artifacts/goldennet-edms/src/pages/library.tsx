@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, FileText, Filter, Eye, Edit, Download } from "lucide-react";
+import { Link } from "wouter";
 import { useDocuments } from "@/hooks/use-documents";
 import { Badge } from "@/components/ui/badge";
 
@@ -126,6 +127,12 @@ export default function Library() {
                   <span className="text-muted-foreground">التاريخ:</span>
                   <span className="font-semibold text-foreground">{doc.date}</span>
                 </div>
+                {doc.modifiedBy && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">آخر تعديل:</span>
+                    <span className="font-semibold text-foreground truncate max-w-[150px]">{doc.modifiedBy}</span>
+                  </div>
+                )}
               </div>
 
               {/* Actions Overlay on Hover (Desktop) / Inline (Mobile) */}

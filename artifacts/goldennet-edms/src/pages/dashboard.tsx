@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FileText, ArrowDownToLine, Clock, CheckCircle2, Eye, Edit, Download, Upload } from "lucide-react";
-import { useDocuments, Document } from "@/hooks/use-documents";
+import { useDocuments, useDocumentCount, Document } from "@/hooks/use-documents";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -76,6 +76,7 @@ const pieData = [
 
 export default function Dashboard() {
   const { data: documents, isLoading } = useDocuments();
+  const totalDocs = useDocumentCount();
 
   const getStatusVariant = (status: string) => {
     switch(status) {
@@ -106,9 +107,9 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <StatCard 
-          title="إجمالي الوثائق" 
-          value="586" 
+        <StatCard
+          title="إجمالي الوثائق"
+          value={String(totalDocs || 0)}
           icon={FileText} 
           colorClass="text-primary" 
           bgColorClass="bg-primary/10" 
