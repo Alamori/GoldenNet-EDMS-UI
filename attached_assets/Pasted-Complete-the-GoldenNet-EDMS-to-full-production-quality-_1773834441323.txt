@@ -1,0 +1,117 @@
+Complete the GoldenNet EDMS to full production quality.
+Focus only on these high-priority items:
+
+## PRIORITY 1 — Document Detail Page (most important)
+Route: /document/:id
+Layout (two columns, RTL):
+
+LEFT COLUMN (40%):
+- PDF viewer box (gray placeholder with PDF icon if no file)
+- Below it: document action buttons row:
+  [ تحميل ⬇ ] [ طباعة 🖨 ] [ مشاركة ] [ أرشفة ]
+
+RIGHT COLUMN (60%):
+- Document title as H1 (Arabic bold)
+- Status badge (large, colored)
+- Metadata card with all fields in 2-column grid:
+  رقم الكتاب | تاريخ الكتاب
+  نوع المراسلة | درجة السرية  
+  الجهة المرسلة/المستلمة | الحالة
+  ملاحظات (full width)
+
+- Approval Chain Section (title: "مسار الاعتماد"):
+  Vertical stepper with 3 steps:
+  ✅ موظف — اسم الموظف — تاريخ الموافقة
+  ⏳ مدير القسم — (في انتظار الموافقة)
+  ⬜ العميد — (لم يصل بعد)
+
+- Decision Action Box (if status = قيد المراجعة):
+  Textarea: "ملاحظات القرار..." 
+  Two buttons: [✅ موافقة واعتماد] (green) [❌ إرجاع/رفض] (red)
+
+- Activity Timeline at bottom:
+  "سجل إجراءات هذه الوثيقة"
+  Each row: colored dot + action + user + time
+  Example: 🟢 تم الرفع بواسطة أحمد محمد — 2024/03/15 09:30
+
+Make the "عرض" button on every document card navigate to this page.
+
+---
+
+## PRIORITY 2 — Upload Form Final Polish
+- After file selected: show filename + size + remove button (×)
+- درجة السرية dropdown with colored left border:
+  🔴 سري للغاية (red border)
+  🟠 سري (orange border)  
+  🟢 عادي (green border)
+- Add animated progress bar (fake 0→100% over 2 seconds on submit)
+- Success screen after upload:
+  Big green checkmark + "تم رفع الوثيقة بنجاح"
+  Document number generated: "رقم المرجع: DOC-2024-587"
+  Two buttons: [عرض الوثيقة] [رفع وثيقة جديدة]
+- All validation errors in Arabic below each field
+
+---
+
+## PRIORITY 3 — Activity Log Page (/activity-log)
+Clean timeline design:
+- Date separator headers (اليوم / أمس / 2024/03/15)
+- Each event row:
+  [Icon] [Action in Arabic] [Document name bold] 
+  [User] · [Time]
+  
+Icons by action type:
+  📤 رفع وثيقة → blue
+  ✅ موافقة → green  
+  ❌ رفض → red
+  ✏️ تعديل → orange
+  👁 مشاهدة → gray
+  🔒 أرشفة → purple
+
+- Filter bar at top: All / Today / This Week / by Type
+- Export button: "تصدير Excel"
+
+---
+
+## PRIORITY 4 — Settings Page (/settings)
+Two sections with tab switcher:
+
+Tab 1: "معلومات المؤسسة"
+- Logo upload circle (placeholder: GoldenNet G icon)
+- اسم المؤسسة: كلية القبس الأهلية
+- الموقع: الموصل، العراق
+- رمز المؤسسة: QABAS
+- Save button
+
+Tab 2: "الحساب الشخصي"  
+- Avatar circle with initials
+- الاسم الكامل / البريد / الصلاحية (readonly)
+- Change password section:
+  كلمة المرور الحالية
+  كلمة المرور الجديدة
+  تأكيد كلمة المرور
+  [تغيير كلمة المرور] button
+
+---
+
+## PRIORITY 5 — Global Polish (small things, big impact)
+
+1. Add page transition animations (fade in) between routes
+2. Skeleton loading screens on Dashboard and Library 
+   (gray animated bars instead of spinners)
+3. Empty state for المراسلات الواردة when no docs:
+   Illustration placeholder + "لا توجد مراسلات واردة حالياً"
+4. Confirmation modal (reusable) for approve/reject actions:
+   "هل تريد الموافقة على هذه الوثيقة؟"
+   [تأكيد] [إلغاء]
+5. Toast notifications (top-center, 3 seconds):
+   ✅ Green: "تمت العملية بنجاح"
+   ❌ Red: "حدث خطأ، يرجى المحاولة"
+6. Print stylesheet — when printing a document detail page,
+   hide sidebar and show only document content
+
+---
+Keep all existing pages working.
+All new text must be Arabic RTL.
+Use existing navy/gold color scheme.
+Use mock Arabic data (realistic Iraqi university examples).

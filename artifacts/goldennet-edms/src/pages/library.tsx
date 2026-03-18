@@ -130,9 +130,11 @@ export default function Library() {
 
               {/* Actions Overlay on Hover (Desktop) / Inline (Mobile) */}
               <div className="mt-6 flex items-center justify-between gap-2 pt-2">
-                 <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-lg transition-colors font-semibold text-sm">
-                   <Eye size={16} /> عرض
-                 </button>
+                 <Link href={`/document/${doc.id}`} className="flex-1">
+                   <button className="w-full flex items-center justify-center gap-2 py-2 bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-lg transition-colors font-semibold text-sm">
+                     <Eye size={16} /> عرض
+                   </button>
+                 </Link>
                  <div className="flex gap-2">
                    <button className="p-2 bg-gray-100 text-gray-600 hover:bg-accent hover:text-white rounded-lg transition-colors" title="تعديل">
                      <Edit size={16} />

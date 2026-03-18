@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UploadCloud, File, X, CheckCircle2, AlertCircle, FileIcon } from "lucide-react";
 import { useUploadDocument } from "@/hooks/use-documents";
@@ -9,8 +9,22 @@ export default function Upload() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [confidentiality, setConfidentiality] = useState("عادي");
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const { mutate, isPending, isSuccess } = useUploadDocument();
+
+  useEffect(() => {
+    if (isPending) {
+      setUploadProgress(0);
+      const interval = setInterval(() => {
+        setUploadProgress(p => p >= 90 ? p : p + 10);
+      }, 200);
+      return () => clearInterval(interval);
+    } else if (isSuccess) {
+      setUploadProgress(100);
+    }
+  }, [isPending, isSuccess]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -31,25 +45,15 @@ export default function Upload() {
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
-    // Fake upload progress
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 100);
   };
 
   const validateForm = (formData: FormData) => {
     const errors: Record<string, string> = {};
-    if (!formData.get("title")) errors.title = "يرجى إدخال الموضوع أو العنوان";
-    if (!formData.get("number")) errors.number = "يرجى إدخال رقم الكتاب";
+    if (!formData.get("title")) errors.title = "حقل الموضوع/العنوان مطلوب";
+    if (!formData.get("number")) errors.number = "رقم الكتاب مطلوب";
     if (!formData.get("date")) errors.date = "يرجى اختيار تاريخ الكتاب";
-    if (!formData.get("entity")) errors.entity = "يرجى إدخال الجهة";
+    if (!formData.get("entity")) errors.entity = "يرجى تحديد الجهة";
+    if (!file) errors.file = "يرجى رفع ملف الوثيقة";
     return errors;
   };
 
@@ -72,18 +76,53 @@ export default function Upload() {
       status: formData.get("status") as any,
       title: formData.get("title") as string,
       // @ts-ignore
-      confidentiality: formData.get("confidentiality") as string,
+      confidentiality: confidentiality,
     }, {
       onSuccess: () => {
-        setFile(null);
-        setUploadProgress(0);
-        e.currentTarget.reset();
+        setShowSuccess(true);
       }
     });
   };
 
+  const confOptions = [
+    { value: "سري للغاية", label: "سري للغاية", color: "text-red-600", dot: "bg-red-500", border: "border-red-400", bg: "bg-red-50" },
+    { value: "سري", label: "سري", color: "text-orange-600", dot: "bg-orange-500", border: "border-orange-400", bg: "bg-orange-50" },
+    { value: "عادي", label: "عادي", color: "text-green-600", dot: "bg-green-500", border: "border-green-400", bg: "bg-green-50" },
+  ];
+
+  if (isSuccess && showSuccess) {
+    return (
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-lg mx-auto text-center py-20 space-y-6">
+        <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle2 size={48} className="text-green-500" />
+        </div>
+        <h2 className="text-3xl font-bold text-foreground">تم رفع الوثيقة بنجاح!</h2>
+        <p className="text-muted-foreground">تم إضافة الوثيقة إلى النظام وهي الآن في انتظار المراجعة</p>
+        <div className="bg-muted/50 border border-border rounded-xl px-6 py-4 text-center">
+          <p className="text-sm text-muted-foreground mb-1">رقم المرجع</p>
+          <p className="text-2xl font-bold text-primary tracking-wider">DOC-2024-{Math.floor(Math.random()*100)+550}</p>
+        </div>
+        <div className="flex gap-4 justify-center">
+          <Link href="/library">
+            <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors">عرض المكتبة</button>
+          </Link>
+          <button 
+            onClick={() => {
+              setShowSuccess(false);
+              setFile(null);
+              setUploadProgress(0);
+            }} 
+            className="px-6 py-3 border border-border rounded-xl font-bold hover:bg-muted transition-colors text-foreground"
+          >
+            رفع وثيقة جديدة
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto space-y-6">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto space-y-6 pb-20">
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
         <Link href="/dashboard" className="hover:text-primary">الرئيسية</Link>
         <span>/</span>
@@ -94,23 +133,6 @@ export default function Upload() {
         <h1 className="text-3xl font-bold text-foreground mb-2">رفع وثيقة جديدة</h1>
         <p className="text-muted-foreground">أدخل تفاصيل المراسلة وارفع الملف المرفق لحفظه في النظام</p>
       </div>
-
-      <AnimatePresence>
-        {isSuccess && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-success/10 border border-success/20 text-success p-4 rounded-xl flex items-center gap-3 overflow-hidden"
-          >
-            <CheckCircle2 size={24} className="shrink-0" />
-            <div>
-              <h4 className="font-bold">تم الرفع بنجاح!</h4>
-              <p className="text-sm">تم إضافة الوثيقة إلى النظام بنجاح ويمكن العثور عليها في المكتبة.</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <form onSubmit={handleSubmit} className="bg-card rounded-3xl shadow-lg border border-border overflow-hidden">
         
@@ -135,22 +157,12 @@ export default function Upload() {
                   <h4 className="font-bold text-base mb-1 truncate w-full text-center">{file.name}</h4>
                   <p className="text-muted-foreground text-xs mb-4">{(file.size / 1024 / 1024).toFixed(2)} MB • PDF Document</p>
                   
-                  {/* Progress Bar */}
-                  <div className="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
-                    <motion.div 
-                      className="bg-success h-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${uploadProgress}%` }}
-                      transition={{ duration: 0.1 }}
-                    />
-                  </div>
-
                   <button 
                     type="button"
-                    onClick={() => { setFile(null); setUploadProgress(0); }}
+                    onClick={() => setFile(null)}
                     className="text-danger flex items-center gap-1 text-sm font-semibold hover:underline bg-danger/10 px-4 py-1.5 rounded-lg"
                   >
-                    <X size={14} /> إزالة الملف وإعادة الرفع
+                    <X size={14} /> إزالة الملف
                   </button>
                 </div>
               </div>
@@ -168,9 +180,9 @@ export default function Upload() {
               </>
             )}
           </div>
-          {!file && (
+          {formErrors.file && (
              <p className="text-center text-xs text-danger mt-3 font-semibold flex items-center justify-center gap-1">
-                <AlertCircle size={12} /> يجب إرفاق الوثيقة الممسوحة ضوئياً (PDF)
+                <AlertCircle size={12} /> {formErrors.file}
              </p>
           )}
         </div>
@@ -211,21 +223,6 @@ export default function Upload() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-foreground">درجة السرية</label>
-            <div className="relative">
-              <select name="confidentiality" className="w-full border border-border rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-background appearance-none">
-                <option value="عادي">عادي</option>
-                <option value="سري">سري</option>
-                <option value="سري جداً">سري جداً</option>
-              </select>
-              <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center pointer-events-none">
-                 <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                 {/* Visual indicator handled by styled select in real app, keeping simple here */}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
             <label className="text-sm font-bold text-foreground">حالة الكتاب</label>
             <select name="status" className="w-full border border-border rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-background appearance-none">
               <option value="جديد">جديد</option>
@@ -235,25 +232,54 @@ export default function Upload() {
           </div>
 
           <div className="space-y-2 col-span-full">
+            <label className="text-sm font-bold text-foreground mb-2 block">درجة السرية</label>
+            <div className="flex flex-wrap gap-3">
+              {confOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setConfidentiality(opt.value)}
+                  className={`flex-1 min-w-[100px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 transition-all ${
+                    confidentiality === opt.value 
+                      ? `${opt.border} ${opt.bg} ${opt.color}` 
+                      : 'border-border bg-transparent hover:bg-muted text-muted-foreground'
+                  }`}
+                >
+                  <div className={`w-3 h-3 rounded-full ${confidentiality === opt.value ? opt.dot : 'bg-muted-foreground/30'}`}></div>
+                  <span className="font-bold text-sm">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2 col-span-full">
             <label className="text-sm font-bold text-foreground">ملاحظات إضافية</label>
             <textarea name="notes" rows={4} className="w-full border border-border rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-background resize-none" placeholder="أضف أي ملاحظات أو توجيهات هنا..."></textarea>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 md:p-8 bg-gray-50/50 border-t border-border flex justify-end gap-4">
-          <Link href="/dashboard">
-            <button type="button" className="px-6 py-3 rounded-xl font-bold text-muted-foreground hover:bg-gray-200 transition-colors">
-              إلغاء
+        <div className="p-6 md:p-8 bg-gray-50/50 border-t border-border flex flex-col gap-4">
+          {uploadProgress > 0 && uploadProgress < 100 && (
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2 overflow-hidden">
+              <motion.div animate={{ width: `${uploadProgress}%` }} className="bg-primary h-2.5 rounded-full" />
+            </div>
+          )}
+          
+          <div className="flex justify-end gap-4 w-full">
+            <Link href="/dashboard">
+              <button type="button" className="px-6 py-3 rounded-xl font-bold text-muted-foreground hover:bg-gray-200 transition-colors">
+                إلغاء
+              </button>
+            </Link>
+            <button 
+              type="submit" 
+              disabled={isPending}
+              className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/30 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+            >
+              {isPending ? "جاري الرفع والحفظ..." : "رفع وحفظ الوثيقة"}
             </button>
-          </Link>
-          <button 
-            type="submit" 
-            disabled={isPending || !file || uploadProgress < 100}
-            className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/30 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
-          >
-            {isPending ? "جاري الحفظ..." : "رفع وحفظ الوثيقة"}
-          </button>
+          </div>
         </div>
       </form>
     </motion.div>

@@ -211,9 +211,18 @@ export function Layout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 relative bg-background">
-          {children}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1 overflow-auto p-4 sm:p-6 lg:p-10 relative bg-background"
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Mobile Overlay */}

@@ -69,9 +69,12 @@ export default function Outgoing() {
         {isLoading ? (
           [1,2,3].map(i => <div key={i} className="bg-card rounded-2xl p-6 border border-border shadow-sm animate-pulse h-48"></div>)
         ) : filteredDocs?.length === 0 ? (
-          <div className="col-span-full py-20 text-center flex flex-col items-center">
-            <Send className="w-16 h-16 text-muted-foreground/30 mb-4" />
-            <h3 className="text-xl font-bold text-foreground mb-2">لا توجد مراسلات صادرة</h3>
+          <div className="col-span-full py-24 flex flex-col items-center justify-center text-center">
+            <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
+              <Send size={40} className="text-muted-foreground/40" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">لا توجد مراسلات صادرة حالياً</h3>
+            <p className="text-muted-foreground text-sm max-w-xs">لم يتم العثور على أي مراسلات صادرة. سيتم إظهارها هنا بعد إرسالها.</p>
           </div>
         ) : (
           filteredDocs?.map((doc, idx) => (
