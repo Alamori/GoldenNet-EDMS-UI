@@ -1,0 +1,78 @@
+Please improve and complete the GoldenNet EDMS UI to production 
+professional level. Here is what I need:
+
+## 1. MISSING PAGES — Build these:
+
+### A. Document Detail Page (/document/:id)
+- Full document viewer (PDF embed area)
+- All metadata fields displayed in Arabic RTL:
+  - رقم الكتاب, الموضوع/العنوان, تاريخ الكتاب
+  - نوع المراسلة, الجهة, درجة السرية, الحالة, ملاحظات
+- Approval timeline (vertical stepper): موظف → مدير القسم → العميد
+- Action buttons: موافقة / رفض / إرجاع / تحميل / طباعة
+- "View" button on every card must navigate to this page
+
+### B. المراسلات الواردة Page (/incoming)
+- Same card grid as library but pre-filtered to نوع=وارد
+- Add a counter badge in sidebar showing unread count
+
+### C. المراسلات الصادرة Page (/outgoing)  
+- Same card grid but pre-filtered to نوع=صادر
+
+### D. سجل الأحداث Page (/activity-log)
+- Timeline list of all actions: رفع / موافقة / رفض / تعديل
+- Each row: icon + user + action + document name + timestamp
+- Filter by date range
+
+### E. الإعدادات Page (/settings)
+- System info section: اسم المؤسسة، الشعار
+- User profile: الاسم، الصلاحية، كلمة المرور
+- Two columns, Arabic RTL
+
+## 2. PROFESSIONAL UI UPGRADES:
+
+### Dashboard improvements:
+- Add a bar chart (last 7 days document activity)
+- Add a pie chart (توزيع المراسلات: وارد / صادر / داخلي)
+- Add "أحدث الإجراءات" activity feed (right column)
+- Make KPI cards animate on load (count up effect)
+
+### Global improvements:
+- Add a top search bar (header level) with instant results dropdown
+- Add notification bell icon in header with badge count
+- Add breadcrumb navigation under header on all pages
+- Add empty state illustrations when no data
+- Add loading skeleton screens (not spinners)
+- Add confirmation modal for: موافقة / رفض actions
+- Add toast notifications for all actions (success/error)
+- Make all tables sortable by clicking column headers
+- Add pagination component (10 items per page)
+
+### Upload form improvements:
+- Add file preview after selection (show PDF thumbnail or filename)
+- Add progress bar during upload
+- Add form validation with Arabic error messages
+- درجة السرية field: make it a styled dropdown with icons
+  (سري جداً 🔴 / سري 🟠 / عادي 🟢)
+
+### Sidebar improvements:
+- Add collapse/expand toggle button
+- Show active page with accent color highlight
+- Add user avatar and role at bottom (العميد / مدير القسم / موظف)
+- Add unread badges on: المراسلات الواردة و قيد المراجعة
+
+## 3. COLOR & BRANDING:
+- Primary color: deep navy #1B2A4A (GoldenNet brand)
+- Accent color: gold #D4A843
+- Keep white background for content area
+- Sidebar: dark navy with gold accents
+- All status badges keep current colors (green/orange/red/blue)
+
+## 4. RESPONSIVE:
+- Must work on tablet (1024px) and desktop (1440px)
+- Sidebar collapses to icon-only on tablet
+
+Please build all pages with mock Arabic data 
+(realistic Iraqi government/university document examples).
+All text must be Arabic RTL. 
+Use the same design system already established.
