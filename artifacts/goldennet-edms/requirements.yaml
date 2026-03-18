@@ -1,0 +1,14 @@
+packages:
+  "framer-motion": "Smooth page transitions and micro-interactions for a premium feel"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility function to efficiently merge Tailwind CSS classes"
+  "date-fns": "For formatting mock dates nicely"
+
+images:
+  - path: "artifacts/goldennet-edms/public/images/login-bg.png"
+    description: "Sleek, premium abstract dark navy background with subtle glowing gold geometric lines and soft lighting, professional corporate government style"
+    aspect_ratio: "16:9"
+
+notes:
+  - App is fully RTL (Arabic). dir="rtl" is applied at the root layout level.
+  - Using mock hooks to simulate API data since there's no backend schema provided.

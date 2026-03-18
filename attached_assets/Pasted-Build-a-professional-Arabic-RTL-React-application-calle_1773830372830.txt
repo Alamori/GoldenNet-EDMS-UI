@@ -1,0 +1,100 @@
+Build a professional Arabic RTL React application called 
+"GoldenNet EDMS" - a Document Management System UI for 
+Al-Qabas Private College in Mosul, Iraq.
+
+TECH STACK:
+- React 18 + Vite
+- Tailwind CSS (RTL support)
+- React Router v6
+- Axios for API calls
+- Lucide React icons
+
+CRITICAL REQUIREMENTS:
+1. Full Arabic RTL layout (dir="rtl")
+2. Arabic font: Tajawal or Cairo from Google Fonts
+3. All text labels in Arabic
+4. Professional dark navy + gold color scheme:
+   Primary: #1B3A6B (navy)
+   Accent:  #C8960C (gold)
+   Background: #F8F9FA
+
+PAGES TO BUILD:
+
+PAGE 1 - Login (تسجيل الدخول):
+- GoldenNet logo + "كلية القبس الأهلية"
+- Username field: "اسم المستخدم"
+- Password field: "كلمة المرور"
+- Login button: "دخول"
+- Arabic RTL layout
+
+PAGE 2 - Dashboard (لوحة التحكم):
+- Top navbar with: logo, user name, logout button
+- Left sidebar (RTL = right side) with menu items:
+  * 🏠 الرئيسية
+  * 📄 المراسلات الواردة
+  * 📤 المراسلات الصادرة
+  * ✅ قيد المراجعة
+  * 🔒 الوثائق السرية
+  * 🗂️ كل المراسلات
+  * 📊 سجل الأحداث
+  * ⚙️ الإعدادات
+- Main content area with 4 stat cards:
+  * إجمالي الوثائق: 586
+  * واردات هذا الشهر: 45
+  * قيد المراجعة: 12
+  * مُعتمدة اليوم: 8
+- Recent documents table with columns:
+  رقم الكتاب | نوع المراسلة | الجهة | التاريخ | الحالة | إجراءات
+
+PAGE 3 - Document Library (مكتبة الوثائق):
+- Search bar with Arabic placeholder: "ابحث في الوثائق..."
+- Filter buttons: الكل | وارد | صادر | داخلي
+- Document cards grid showing:
+  * Document icon (PDF/JPG)
+  * اسم الوثيقة
+  * رقم الكتاب
+  * التاريخ
+  * الحالة badge (جديد/قيد المراجعة/مُعتمد)
+  * Buttons: عرض | تعديل | تحميل
+
+PAGE 4 - Upload Document (رفع وثيقة):
+- Drag & drop upload area with Arabic text
+- Form fields (all Arabic):
+  * رقم الكتاب (text)
+  * تاريخ الكتاب (date)
+  * نوع المراسلة (dropdown: وارد/صادر/داخلي)
+  * الجهة المستلمة (text)
+  * درجة السرية (dropdown: عادي/سري/سري للغاية)
+  * حالة الكتاب (dropdown: جديد/قيد المراجعة/مُعتمد)
+- Submit button: "رفع الوثيقة"
+
+PAGE 5 - Workflow Dashboard (سير العمل):
+- My pending tasks section: "مهامي المعلقة"
+- Task cards showing:
+  * Document name
+  * Stage indicator: موظف ✅ → مدير القسم ⏳ → العميد ⬜
+  * Due date with countdown
+  * Approve/Reject buttons: "موافقة" | "رفض"
+
+DESIGN DETAILS:
+- Status badges:
+  جديد = blue badge
+  قيد المراجعة = orange badge  
+  مُعتمد = green badge
+  مرفوض = red badge
+- Hover effects on all interactive elements
+- Smooth transitions
+- Mobile responsive
+- Professional table with alternating row colors
+- Sidebar active item highlighted in gold
+
+MOCK DATA:
+Use realistic Arabic mock data for all displays:
+- Document names like: "أمر إداري رقم 155", "كتاب وارد من وزارة التعليم"
+- Departments: "شعبة الشؤون الإدارية", "قسم الأمن السيبراني"
+- Dates in Arabic format
+
+Make it look like a premium government document 
+management system — professional, clean, and 
+production-ready. This will connect to Alfresco 
+CE REST API at http://localhost:8080
